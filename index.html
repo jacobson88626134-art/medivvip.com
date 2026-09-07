@@ -105,6 +105,10 @@
                         <span class="text-sm sm:text-base">⚠️</span>
                         <span>구매 전 필독</span>
                     </a>
+                    <a href="https://open.kakao.com/o/sClv6uMi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-amber-400 hover:bg-amber-500 text-yellow-950 font-black text-xs sm:text-sm px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-amber-500 shadow-sm whitespace-nowrap">
+                        <span class="text-sm sm:text-base">💬</span>
+                        <span>카톡상담</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -824,45 +828,316 @@
 
     </main>
 
-    <!-- 대체 사이트 안내 팝업 모달 -->
-    <div id="notice-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-2xl border-2 border-red-500 transform transition-all">
-            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">!</div>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">주문 시스템 업데이트 안내</h3>
-            <p class="text-gray-600 text-sm mb-6 leading-relaxed">
-                현재 사이트 주문 시스템 업데이트 중입니다.<br>
-                아래 대체 사이트로 이동하여 주문을 진행해 주시기 바랍니다.
-            </p>
-            <a href="https://ssw33.xyz" target="_blank" rel="noopener noreferrer" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg mb-3">
-                대체 사이트로 이동하여 주문하기
-            </a>
-            <button id="close-modal-btn" class="text-xs text-gray-400 hover:text-gray-600 underline">창 닫기</button>
+    <!-- 신규 주문 신청 팝업 모달 -->
+    <div id="order-modal" class="fixed inset-0 bg-black/60 z-50 items-center justify-center p-4 hidden overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-blue-100 relative my-8 animate-fade-in">
+            <!-- 닫기 버튼 -->
+            <button id="close-order-modal-btn" type="button" class="absolute top-5 right-5 text-gray-400 hover:text-gray-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-xl font-bold transition">&times;</button>
+            
+            <div class="text-center mb-6">
+                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-black px-3 py-1 rounded-full mb-2">100% 정품 보장 · 안심 비밀포장</span>
+                <h3 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">온라인 간편 주문 신청</h3>
+                <p class="text-xs sm:text-sm text-gray-500 mt-1">주문 정보를 입력해 주시면 신속하게 확인 후 당일 발송해 드립니다.</p>
+            </div>
+
+            <!-- 주문 입력 폼 -->
+            <form id="orderForm" onsubmit="submitOrder(event)" class="space-y-4 text-left">
+                <!-- 선택 상품 정보 박스 -->
+                <div class="bg-blue-50/70 p-4 rounded-2xl border border-blue-200">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-bold text-blue-700">신청 상품 정보</span>
+                        <button type="button" id="toggle-dropdown-btn" class="text-xs text-blue-600 hover:underline">다른 상품 선택</button>
+                    </div>
+                    
+                    <!-- 단일 선택 상태 표시 -->
+                    <div id="singleProductDiv" class="flex justify-between items-center">
+                        <span id="singleText" class="font-bold text-gray-900 text-sm sm:text-base truncate">비아그라 30정+비아그라 30정</span>
+                        <span id="singlePrice" class="font-black text-blue-700 text-base flex-shrink-0 ml-2">160,000원</span>
+                    </div>
+
+                    <!-- 상품 변경 드롭다운 (선택 시 활성화) -->
+                    <div id="dropdownDiv" class="hidden mt-2">
+                        <select id="productSelect" class="w-full bg-white border border-blue-300 rounded-xl px-3 py-2 text-xs sm:text-sm font-medium text-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <option value="비아(판포장)16정+16정 (150,000원)">비아(판포장)16정+16정 - 150,000원</option>
+                            <option value="비아그라 30정+비아그라 30정 (160,000원)" selected>비아그라 30정+비아그라 30정 - 160,000원</option>
+                            <option value="시알(판포장)16정+16정 (150,000원)">시알(판포장)16정+16정 - 150,000원</option>
+                            <option value="시알리스 30정+시알리스 30정 (160,000원)">시알리스 30정+시알리스 30정 - 160,000원</option>
+                            <option value="레비트라 30정+레비트라 30정 (160,000원)">레비트라 30정+레비트라 30정 - 160,000원</option>
+                            <option value="아이코스 30캡슐+30캡슐 (230,000원)">아이코스 30캡슐+30캡슐 - 230,000원</option>
+                            <option value="드래곤 30정+드래곤 30정 (230,000원)">드래곤 30정+드래곤 30정 - 230,000원</option>
+                            <option value="비닉스필름 10매+비닉스필름 10매 (180,000원)">비닉스필름 10매+비닉스필름 10매 - 180,000원</option>
+                            <option value="센트립필름 10매+센트립필름 10매 (180,000원)">센트립필름 10매+센트립필름 10매 - 180,000원</option>
+                            <option value="카마그라 젤 7팩+카마그라 젤 7팩 (150,000원)">카마그라 젤 7팩+카마그라 젤 7팩 - 150,000원</option>
+                            <option value="프릴리지 10정+프릴리지 10정 (150,000원)">프릴리지 10정+프릴리지 10정 - 150,000원</option>
+                            <option value="도즈88000 2병 (90,000원)">도즈88000 2병 - 90,000원</option>
+                            <option value="프로코밀 2박스 (80,000원)">프로코밀 2박스 - 80,000원</option>
+                            <option value="리퀴드섹스 2병+리퀴드섹스 2병 (150,000원)">리퀴드섹스 2병+리퀴드섹스 2병 - 150,000원</option>
+                            <option value="D10 2병+D10 2병 (150,000원)">D10 2병+D10 2병 - 150,000원</option>
+                            <option value="스페니쉬 2병+스페니쉬 2병 (140,000원)">스페니쉬 2병+스페니쉬 2병 - 140,000원</option>
+                            <option value="레드스파이더 2병+레드스파이더 2병 (130,000원)">레드스파이더 2병+레드스파이더 2병 - 130,000원</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 주문자 성함 -->
+                <div>
+                    <label for="userName" class="block text-xs font-bold text-gray-700 mb-1">주문자 성함 <span class="text-red-500">*</span></label>
+                    <input type="text" id="userName" name="userName" required placeholder="받으실 분 성함 입력" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                </div>
+
+                <!-- 전화번호 (자동 010-0000-0000 포맷팅) -->
+                <div>
+                    <label for="userPhone" class="block text-xs font-bold text-gray-700 mb-1">휴대폰 번호 <span class="text-red-500">*</span></label>
+                    <input type="tel" id="userPhone" name="userPhone" maxlength="13" required placeholder="010-0000-0000 (숫자만 입력 시 자동 변환)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                </div>
+
+                <!-- 주소 -->
+                <div>
+                    <label for="userAddress" class="block text-xs font-bold text-gray-700 mb-1">배송지 주소 <span class="text-red-500">*</span></label>
+                    <input type="text" id="userAddress" name="userAddress" required placeholder="상세 주소(동·호수 포함)를 정확히 입력해주세요" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                </div>
+
+                <!-- 배송 메모 -->
+                <div>
+                    <label for="userMemo" class="block text-xs font-bold text-gray-700 mb-1">배송 요청사항 / 메모</label>
+                    <input type="text" id="userMemo" name="userMemo" placeholder="예: 부재 시 문 앞에 놓아주세요 / 택배보관함" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                </div>
+
+                <!-- 주문 날짜 (자동 표시) -->
+                <div>
+                    <label for="orderDate" class="block text-xs font-bold text-gray-700 mb-1">주문 일자</label>
+                    <input type="text" id="orderDate" name="orderDate" readonly class="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-xs font-semibold text-gray-500 cursor-not-allowed">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all transform active:scale-98 flex items-center justify-center gap-2 text-sm sm:text-base">
+                        <span>주문 신청 완료하기</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- 모달 팝업 제어 스크립트 -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var modal = document.getElementById('notice-modal');
-        var closeBtn = document.getElementById('close-modal-btn');
+    <!-- 커스텀 알림/피드백 모달 -->
+    <div id="customAlert" class="fixed inset-0 bg-black/60 z-50 items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-gray-100">
+            <div id="customAlertIcon" class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-xl">✓</div>
+            <h4 id="customAlertTitle" class="text-lg font-black text-gray-900 mb-2">알림</h4>
+            <p id="customAlertMessage" class="text-gray-600 text-xs sm:text-sm mb-5 leading-relaxed"></p>
+            <button type="button" id="customAlertCloseBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-sm transition">확인</button>
+        </div>
+    </div>
 
-        function openModal() {
-            if (modal) modal.classList.remove('hidden');
+    <!-- 인터랙티브 스크립트: 주문 팝업, 전화번호 자동서식, 텔레그램 연동 Submit -->
+    <script>
+    var orderModal = document.getElementById('order-modal');
+    var customAlert = document.getElementById('customAlert');
+    var dropdownDiv = document.getElementById('dropdownDiv');
+    var selectBox = document.getElementById('productSelect');
+    var singleText = document.getElementById('singleText');
+    var singlePrice = document.getElementById('singlePrice');
+    var singleProductDiv = document.getElementById('singleProductDiv');
+
+    function openModalWithProduct(name, price) {
+        if (singleText) singleText.innerText = name || "비아그라 30정+비아그라 30정";
+        if (singlePrice) singlePrice.innerText = price || "160,000원";
+        
+        if (dropdownDiv) dropdownDiv.classList.add('hidden');
+        if (singleProductDiv) singleProductDiv.classList.remove('hidden');
+
+        // 주문 일자 자동 세팅
+        var now = new Date();
+        var dateStr = now.getFullYear() + '년 ' + String(now.getMonth() + 1).padStart(2, '0') + '월 ' + String(now.getDate()).padStart(2, '0') + '일';
+        var dateInput = document.getElementById('orderDate');
+        if (dateInput) dateInput.value = dateStr;
+
+        if (orderModal) {
+            orderModal.classList.remove('hidden');
+            orderModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeModal() {
+        if (orderModal) {
+            orderModal.classList.add('hidden');
+            orderModal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+    }
+
+    function showCustomNotice(message, title, isSuccess) {
+        var msgEl = document.getElementById('customAlertMessage');
+        var titleEl = document.getElementById('customAlertTitle');
+        var iconEl = document.getElementById('customAlertIcon');
+
+        if (msgEl) msgEl.innerText = message;
+        if (titleEl) titleEl.innerText = title || "안내";
+        if (iconEl) {
+            if (isSuccess) {
+                iconEl.className = "w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-xl";
+                iconEl.innerText = "✓";
+            } else {
+                iconEl.className = "w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-xl";
+                iconEl.innerText = "!";
+            }
         }
 
-        if (closeBtn && modal) {
-            closeBtn.addEventListener('click', function() {
-                modal.classList.add('hidden');
+        if (customAlert) {
+            customAlert.classList.remove('hidden');
+            customAlert.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function hideCustomNotice() {
+        if (customAlert) {
+            customAlert.classList.add('hidden');
+            customAlert.classList.remove('flex');
+            if (orderModal && orderModal.classList.contains('hidden')) {
+                document.body.style.overflow = '';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var closeOrderBtn = document.getElementById('close-order-modal-btn');
+        if (closeOrderBtn) closeOrderBtn.addEventListener('click', closeModal);
+
+        var alertCloseBtn = document.getElementById('customAlertCloseBtn');
+        if (alertCloseBtn) alertCloseBtn.addEventListener('click', hideCustomNotice);
+
+        // 상품 변경 토글 버튼
+        var toggleBtn = document.getElementById('toggle-dropdown-btn');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                if (dropdownDiv) dropdownDiv.classList.toggle('hidden');
             });
         }
 
-        var orderBtns = document.querySelectorAll('.order-btn, .product-card');
+        // 셀렉트박스 변경 시 상단 정보 동기화
+        if (selectBox) {
+            selectBox.addEventListener('change', function() {
+                var selectedText = selectBox.options[selectBox.selectedIndex].text;
+                var parts = selectedText.split(' - ');
+                if (singleText && parts[0]) singleText.innerText = parts[0];
+                if (singlePrice && parts[1]) singlePrice.innerText = parts[1];
+            });
+        }
+
+        // 전화번호 자동 포맷팅 (010-0000-0000)
+        var phoneInput = document.getElementById('userPhone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                var val = e.target.value.replace(/[^0-9]/g, '');
+                var formatted = '';
+                if (val.length < 4) {
+                    formatted = val;
+                } else if (val.length < 8) {
+                    formatted = val.substring(0, 3) + '-' + val.substring(3);
+                } else {
+                    formatted = val.substring(0, 3) + '-' + val.substring(3, 7) + '-' + val.substring(7, 11);
+                }
+                e.target.value = formatted;
+            });
+        }
+
+        // 각 상품 카드 및 주문 버튼 클릭 이벤트 연결
+        var orderBtns = document.querySelectorAll('.order-btn');
         orderBtns.forEach(function(btn) {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                openModal();
+                e.stopPropagation();
+                var card = btn.closest('.product-card');
+                var title = card ? card.querySelector('h3').innerText.trim() : "";
+                var price = card ? card.querySelector('p.font-black').innerText.trim() : "";
+                openModalWithProduct(title, price);
             });
         });
+
+        var productCards = document.querySelectorAll('.product-card');
+        productCards.forEach(function(card) {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('button')) return;
+                e.preventDefault();
+                var title = card.querySelector('h3').innerText.trim();
+                var price = card.querySelector('p.font-black').innerText.trim();
+                openModalWithProduct(title, price);
+            });
+        });
+    });
+
+    // 5. 텔레그램 연동 Submit (CORS 우회 적용)
+    async function submitOrder(event) {
+        event.preventDefault();
+        const phoneInput = document.getElementById("userPhone");
+        const phoneVal = phoneInput.value.replace(/[^0-9]/g, '');
+        if (!phoneVal.startsWith("010") || phoneVal.length < 10) {
+            showCustomNotice("휴대폰 번호를 정확히 입력해주세요. (010으로 시작해야 합니다.)", "전화번호 확인", false);
+            phoneInput.focus();
+            return;
+        }
+
+        const userName = document.getElementById("userName").value.trim();
+        const userPhone = phoneInput.value.trim();
+        const userAddress = document.getElementById("userAddress").value.trim();
+        const userMemo = document.getElementById("userMemo").value.trim() || "메모 없음";
+
+        let productInfo = "";
+        if (dropdownDiv && !dropdownDiv.classList.contains("hidden")) {
+            productInfo = selectBox.options[selectBox.selectedIndex].text;
+        } else {
+            productInfo = `${singleText.innerText} (${singlePrice.innerText})`;
+        }
+
+        // 주문 접수 시점 날짜 및 시간 포맷팅 (YYYY-MM-DD HH:mm:ss)
+        const now = new Date();
+        const pad = (n) => String(n).padStart(2, '0');
+        const orderDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+        // 전송할 텍스트 조합 (날짜 및 시간 추가)
+        const messageText = `${productInfo} | ${userName} | ${userPhone} | ${userAddress} | ${userMemo} | ${orderDateTime} | 비아약국`;
+
+        const botToken = "8818199189:AAGup-iHBjOrMZ1ajQAG2iR7DoOtqdl8GvY";
+        const chatId = "7774402153";
+        const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.innerText = "전송 중...";
+        submitBtn.disabled = true;
+
+        try {
+            // JSON 방식이 아닌 폼 데이터 방식으로 변경하여 브라우저 로컬 차단(CORS) 우회
+            const response = await fetch(telegramUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ chat_id: chatId, text: messageText })
+            });
+
+            if (response.ok) {
+                closeModal();
+                showCustomNotice("주문 신청이 성공적으로 접수되었습니다. 담당자가 확인 후 신속하게 당일 비밀 배송을 준비하겠습니다.", "주문 완료", true);
+                event.target.reset();
+            } else {
+                const errData = await response.json();
+                showCustomNotice(`전송 실패 (오류 내용: ${errData.description})`, "주문 오류", false);
+            }
+        } catch (error) {
+            console.error("통신 오류 상세:", error);
+            showCustomNotice("일시적인 통신 오류가 발생했습니다. 카카오톡 상담 또는 고객센터로 직접 문의 부탁드립니다.", "통신 오류", false);
+        } finally {
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
+        }
+    }
+    </script>
+
+    <!-- 채널톡 스크립트 -->
+    <script>
+    (function(){var w=window;if(w.ChannelIO){return w.console.error("ChannelIO script included twice.");}var ch=function(){ch.c(arguments);};ch.q=[];ch.c=function(args){ch.q.push(args);};w.ChannelIO=ch;function l(){if(w.ChannelIOInitialized){return;}w.ChannelIOInitialized=true;var s=document.createElement("script");s.type="text/javascript";s.async=true;s.src="https://cdn.channel.io/plugin/ch-plugin-web.js";var x=document.getElementsByTagName("script")[0];if(x.parentNode){x.parentNode.insertBefore(s,x);}}if(document.readyState==="complete"){l();}else{w.addEventListener("DOMContentLoaded",l);w.addEventListener("load",l);}})();
+    ChannelIO('boot', {
+    "pluginKey": "1cb40581-b6e8-4715-9bb2-7934a6ad432c"
     });
     </script>
 
