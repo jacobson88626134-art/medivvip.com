@@ -91,8 +91,8 @@
                     </a>
                 </div>
 
-                <!-- 우측 링크 버튼 그룹: 배송안내 -> 비아그라정보 -> 구매 전 필독 -->
-                <div class="flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto no-scrollbar">
+                <!-- 우측 링크 버튼 그룹: 데스크톱 (sm 이상) -->
+                <div class="hidden sm:flex items-center gap-2">
                     <a href="#delivery" class="inline-flex items-center gap-1 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white text-xs sm:text-sm font-bold px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-blue-200 hover:border-blue-600 shadow-sm whitespace-nowrap">
                         <span class="text-sm sm:text-base">📦</span>
                         <span>배송안내</span>
@@ -108,6 +108,40 @@
                     <a href="https://open.kakao.com/o/sClv6uMi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-amber-400 hover:bg-amber-500 text-yellow-950 font-black text-xs sm:text-sm px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-amber-500 shadow-sm whitespace-nowrap">
                         <span class="text-sm sm:text-base">💬</span>
                         <span>카톡상담</span>
+                    </a>
+                </div>
+
+                <!-- 우측 링크 버튼 그룹: 모바일 전용 (sm 미만 드롭다운 메뉴) -->
+                <div class="flex sm:hidden items-center gap-1.5 relative">
+                    <!-- 안내 드롭다운 메뉴 버튼 -->
+                    <div class="relative" id="mobileGuideDropdownContainer">
+                        <button type="button" id="mobileGuideDropdownBtn" class="inline-flex items-center gap-1 bg-blue-50 active:bg-blue-100 text-blue-700 font-bold text-xs px-2.5 py-1.5 rounded-xl border border-blue-200 shadow-sm transition">
+                            <span>📋 이용안내</span>
+                            <svg class="w-3.5 h-3.5 transition-transform duration-200" id="mobileGuideDropdownArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <!-- 드롭다운 메뉴 팝업 레이어 -->
+                        <div id="mobileGuideDropdownMenu" class="hidden absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-xl border border-blue-100 py-1.5 z-50 divide-y divide-gray-100">
+                            <a href="#delivery" class="mobile-guide-link flex items-center gap-2 px-3.5 py-2.5 text-xs font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition">
+                                <span class="text-base">📦</span>
+                                <span>배송안내</span>
+                            </a>
+                            <a href="#viagra-info" class="mobile-guide-link flex items-center gap-2 px-3.5 py-2.5 text-xs font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition">
+                                <span class="text-base">📘</span>
+                                <span>비아그라정보</span>
+                            </a>
+                            <a href="#safety" class="mobile-guide-link flex items-center gap-2 px-3.5 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 transition">
+                                <span class="text-base">⚠️</span>
+                                <span>구매 전 필독</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 모바일 카톡상담 바로가기 버튼 -->
+                    <a href="https://open.kakao.com/o/sClv6uMi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-amber-400 hover:bg-amber-500 text-yellow-950 font-black text-xs px-2.5 py-1.5 rounded-xl border border-amber-500 shadow-sm whitespace-nowrap">
+                        <span>💬</span>
+                        <span>카톡</span>
                     </a>
                 </div>
             </div>
@@ -1065,6 +1099,42 @@
                 openModalWithProduct(title, price);
             });
         });
+
+        // 모바일 가이드 드롭다운 토글 및 외부 클릭 감지 처리
+        var guideDropdownBtn = document.getElementById('mobileGuideDropdownBtn');
+        var guideDropdownMenu = document.getElementById('mobileGuideDropdownMenu');
+        var guideDropdownArrow = document.getElementById('mobileGuideDropdownArrow');
+
+        if (guideDropdownBtn && guideDropdownMenu) {
+            guideDropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var isHidden = guideDropdownMenu.classList.contains('hidden');
+                if (isHidden) {
+                    guideDropdownMenu.classList.remove('hidden');
+                    if (guideDropdownArrow) guideDropdownArrow.classList.add('rotate-180');
+                } else {
+                    guideDropdownMenu.classList.add('hidden');
+                    if (guideDropdownArrow) guideDropdownArrow.classList.remove('rotate-180');
+                }
+            });
+
+            // 드롭다운 내부 링크 클릭 시 메뉴 닫기
+            var guideLinks = document.querySelectorAll('.mobile-guide-link');
+            guideLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    guideDropdownMenu.classList.add('hidden');
+                    if (guideDropdownArrow) guideDropdownArrow.classList.remove('rotate-180');
+                });
+            });
+
+            // 화면 다른 곳 클릭 시 드롭다운 닫기
+            document.addEventListener('click', function(e) {
+                if (!guideDropdownMenu.contains(e.target) && e.target !== guideDropdownBtn) {
+                    guideDropdownMenu.classList.add('hidden');
+                    if (guideDropdownArrow) guideDropdownArrow.classList.remove('rotate-180');
+                }
+            });
+        }
     });
 
     // 5. 텔레그램 연동 Submit (CORS 우회 적용)
