@@ -58,7 +58,7 @@
 </head>
 <body class="text-gray-800 antialiased flex flex-col min-h-screen">
 
-    <!-- 헤더 영역: 1단 구조 (좌측 로고, 우측 버튼형 메뉴) -->
+    <!-- 헤더 영역: 1단 구조 (PC는 버튼, 모바일은 드롭다운) -->
     <header class="bg-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-14 sm:h-16">
@@ -69,15 +69,44 @@
                     </a>
                 </div>
 
-                <!-- 우측 메뉴 바 (카톡상담 버튼과 동일한 버튼 UI 적용, 모바일 가로 스크롤) -->
-                <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-2">
-                    <a href="/#category-1" class="inline-flex items-center bg-gray-50 hover:bg-blue-600 text-gray-700 hover:text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 shadow-sm whitespace-nowrap">남성정력제</a>
-                    <a href="/#category-2" class="inline-flex items-center bg-gray-50 hover:bg-blue-600 text-gray-700 hover:text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 shadow-sm whitespace-nowrap">남성조루제품</a>
-                    <a href="/#category-3" class="inline-flex items-center bg-gray-50 hover:bg-blue-600 text-gray-700 hover:text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 shadow-sm whitespace-nowrap">여성흥분제</a>
-                    <a href="/#safety" class="inline-flex items-center bg-red-50 hover:bg-red-600 text-red-600 hover:text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-red-200 hover:border-red-600 shadow-sm whitespace-nowrap">구매 전 필독</a>
-                    <a href="/reviews" class="inline-flex items-center bg-blue-600 text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-blue-600 shadow-sm whitespace-nowrap">고객후기</a>
+                <!-- 데스크톱 전용 메뉴 (sm 이상에서 표시) -->
+                <div class="hidden sm:flex items-center gap-2 py-2">
+                    <a href="/#category-1" class="inline-flex items-center bg-gray-50 hover:bg-blue-600 text-gray-700 hover:text-white font-bold text-sm px-3 py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 shadow-sm whitespace-nowrap">남성정력제</a>
+                    <a href="/#category-2" class="inline-flex items-center bg-gray-50 hover:bg-blue-600 text-gray-700 hover:text-white font-bold text-sm px-3 py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 shadow-sm whitespace-nowrap">남성조루제품</a>
+                    <a href="/#category-3" class="inline-flex items-center bg-gray-50 hover:bg-blue-600 text-gray-700 hover:text-white font-bold text-sm px-3 py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 shadow-sm whitespace-nowrap">여성흥분제</a>
+                    <a href="/#safety" class="inline-flex items-center bg-red-50 hover:bg-red-600 text-red-600 hover:text-white font-bold text-sm px-3 py-2 rounded-xl transition-all duration-200 border border-red-200 hover:border-red-600 shadow-sm whitespace-nowrap">구매 전 필독</a>
+                    <a href="/reviews" class="inline-flex items-center bg-blue-600 text-white font-bold text-sm px-3 py-2 rounded-xl transition-all duration-200 border border-blue-600 shadow-sm whitespace-nowrap">고객후기</a>
                     
-                   
+                    <!-- 카톡상담 버튼 -->
+                    <a href="https://open.kakao.com/o/sClv6uMi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-[#FEE500] hover:bg-[#F4DC00] text-[#371D1E] font-black text-sm px-4 py-2 rounded-xl transition-all duration-200 shadow-sm whitespace-nowrap flex-shrink-0">
+                        <span>💬 카톡상담</span>
+                    </a>
+                </div>
+
+                <!-- 모바일 전용 메뉴 (sm 미만에서 표시) -->
+                <div class="flex sm:hidden items-center gap-2">
+                    <!-- 카톡상담 (모바일 상시노출) -->
+                    <a href="https://open.kakao.com/o/sClv6uMi" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-[#FEE500] hover:bg-[#F4DC00] text-[#371D1E] font-black text-xs px-3 py-1.5 rounded-xl transition-all duration-200 shadow-sm whitespace-nowrap">
+                        <span>💬 카톡</span>
+                    </a>
+                    
+                    <!-- 햄버거 드롭다운 -->
+                    <div class="relative" id="mobileMenuDropdownContainer">
+                        <button type="button" id="mobileMenuToggleBtn" class="inline-flex items-center justify-center p-1.5 rounded-xl text-gray-600 hover:text-blue-700 bg-gray-50 border border-gray-200 focus:outline-none transition">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- 모바일 드롭다운 메뉴 -->
+                        <div id="mobileDropdownMenu" class="hidden absolute right-0 mt-3 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 py-1.5 z-50 divide-y divide-gray-50">
+                            <a href="/#category-1" class="block px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700">남성정력제</a>
+                            <a href="/#category-2" class="block px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700">남성조루제품</a>
+                            <a href="/#category-3" class="block px-4 py-3 text-sm font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-700">여성흥분제</a>
+                            <a href="/#safety" class="block px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50">구매 전 필독</a>
+                            <a href="/reviews" class="block px-4 py-3 text-sm font-bold text-blue-600 bg-blue-50">고객후기</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -298,7 +327,7 @@
                         <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> 공식 채널 및 상담
                     </h4>
                     <div class="flex flex-col gap-3">
-                        <a href="https://medivvip.com" class="group flex items-center justify-center gap-2 bg-slate-800 hover:bg-blue-600 text-gray-200 hover:text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 border border-slate-700 hover:border-blue-500 text-sm shadow-sm">
+                        <a href="/" class="group flex items-center justify-center gap-2 bg-slate-800 hover:bg-blue-600 text-gray-200 hover:text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 border border-slate-700 hover:border-blue-500 text-sm shadow-sm">
                             <svg class="w-4 h-4 text-blue-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
                             공식몰 접속하기
                         </a>
@@ -341,38 +370,20 @@
             el.textContent = year + '.' + month + '.' + day;
         });
 
-        // 모바일 가이드 드롭다운 토글 및 외부 클릭 감지 스크립트
-        var guideDropdownBtn = document.getElementById('mobileGuideDropdownBtn');
-        var guideDropdownMenu = document.getElementById('mobileGuideDropdownMenu');
-        var guideDropdownArrow = document.getElementById('mobileGuideDropdownArrow');
+        // 모바일 메뉴 드롭다운 토글 및 외부 클릭 감지 스크립트
+        var mobileMenuBtn = document.getElementById('mobileMenuToggleBtn');
+        var mobileDropdown = document.getElementById('mobileDropdownMenu');
 
-        if (guideDropdownBtn && guideDropdownMenu) {
-            guideDropdownBtn.addEventListener('click', function(e) {
+        if (mobileMenuBtn && mobileDropdown) {
+            mobileMenuBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                var isHidden = guideDropdownMenu.classList.contains('hidden');
-                if (isHidden) {
-                    guideDropdownMenu.classList.remove('hidden');
-                    if (guideDropdownArrow) guideDropdownArrow.classList.add('rotate-180');
-                } else {
-                    guideDropdownMenu.classList.add('hidden');
-                    if (guideDropdownArrow) guideDropdownArrow.classList.remove('rotate-180');
-                }
-            });
-
-            // 드롭다운 내부 링크 클릭 시 메뉴 닫기
-            var guideLinks = document.querySelectorAll('.mobile-guide-link');
-            guideLinks.forEach(function(link) {
-                link.addEventListener('click', function() {
-                    guideDropdownMenu.classList.add('hidden');
-                    if (guideDropdownArrow) guideDropdownArrow.classList.remove('rotate-180');
-                });
+                mobileDropdown.classList.toggle('hidden');
             });
 
             // 화면 다른 곳 클릭 시 드롭다운 닫기
             document.addEventListener('click', function(e) {
-                if (!guideDropdownMenu.contains(e.target) && e.target !== guideDropdownBtn) {
-                    guideDropdownMenu.classList.add('hidden');
-                    if (guideDropdownArrow) guideDropdownArrow.classList.remove('rotate-180');
+                if (!mobileDropdown.contains(e.target) && e.target !== mobileMenuBtn) {
+                    mobileDropdown.classList.add('hidden');
                 }
             });
         }
