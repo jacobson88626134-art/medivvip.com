@@ -33,7 +33,7 @@
           "brand": {
             "@type": "Brand",
             "name": "비아약국",
-            "alternateName": "VIABUY",
+            "alternateName": "VIABUY"
           },
           "aggregateRating": {
             "@type": "AggregateRating",
@@ -51,25 +51,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; }
+        /* 스크롤바 숨김 처리 (모바일 네비게이션용) */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="text-gray-800 antialiased flex flex-col min-h-screen">
 
+    <!-- 헤더 영역: 1단 구조 (좌측 로고, 우측 버튼형 메뉴) -->
     <header class="bg-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="/" class="text-2xl font-black text-blue-700 tracking-tighter">
-                        비아약국<span class="text-sm font-bold text-gray-500 ml-1">VIABUY</span>
+            <div class="flex justify-between items-center h-14 sm:h-16">
+                <!-- 좌측 로고 -->
+                <div class="flex-shrink-0 flex items-center pr-4">
+                    <a href="/" class="text-xl sm:text-2xl font-black text-blue-700 tracking-tighter hover:opacity-90 transition">
+                        비아약국<span class="text-xs sm:text-sm font-bold text-gray-500 ml-1">VIABUY</span>
                     </a>
                 </div>
-                <nav class="hidden md:flex space-x-8">
-                    <a href="/#category-1" class="text-gray-600 hover:text-blue-600 font-medium transition">남성정력제</a>
-                    <a href="/#category-2" class="text-gray-600 hover:text-blue-600 font-medium transition">남성조루제품</a>
-                    <a href="/#category-3" class="text-gray-600 hover:text-blue-600 font-medium transition">여성흥분제</a>
-                    <a href="/#safety" class="text-red-500 hover:text-red-700 font-medium transition">구매 전 필독</a>
-                    <a href="/reviews" class="text-blue-600 font-bold transition">고객후기</a>
-                </nav>
+
+                <!-- 우측 메뉴 바 (카톡상담 버튼과 동일한 버튼 UI 적용, 모바일 가로 스크롤) -->
+                <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-2">
+                    <a href="/#category-1" class="inline-flex items-center bg-gray-50 hover:bg-blue-600 text-gray-700 hover:text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 shadow-sm whitespace-nowrap">남성정력제</a>
+                    <a href="/#category-2" class="inline-flex items-center bg-gray-50 hover:bg-blue-600 text-gray-700 hover:text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 shadow-sm whitespace-nowrap">남성조루제품</a>
+                    <a href="/#category-3" class="inline-flex items-center bg-gray-50 hover:bg-blue-600 text-gray-700 hover:text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-blue-600 shadow-sm whitespace-nowrap">여성흥분제</a>
+                    <a href="/#safety" class="inline-flex items-center bg-red-50 hover:bg-red-600 text-red-600 hover:text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-red-200 hover:border-red-600 shadow-sm whitespace-nowrap">구매 전 필독</a>
+                    <a href="/reviews" class="inline-flex items-center bg-blue-600 text-white font-bold text-xs sm:text-sm px-3 py-1.5 sm:py-2 rounded-xl transition-all duration-200 border border-blue-600 shadow-sm whitespace-nowrap">고객후기</a>
+                    
+                   
+                </div>
             </div>
         </div>
     </header>
@@ -317,6 +326,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // 기존 리뷰 날짜 스크립트
         var reviewDates = document.querySelectorAll('.review-date');
         var now = new Date();
         
@@ -330,6 +340,42 @@
             
             el.textContent = year + '.' + month + '.' + day;
         });
+
+        // 모바일 가이드 드롭다운 토글 및 외부 클릭 감지 스크립트
+        var guideDropdownBtn = document.getElementById('mobileGuideDropdownBtn');
+        var guideDropdownMenu = document.getElementById('mobileGuideDropdownMenu');
+        var guideDropdownArrow = document.getElementById('mobileGuideDropdownArrow');
+
+        if (guideDropdownBtn && guideDropdownMenu) {
+            guideDropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var isHidden = guideDropdownMenu.classList.contains('hidden');
+                if (isHidden) {
+                    guideDropdownMenu.classList.remove('hidden');
+                    if (guideDropdownArrow) guideDropdownArrow.classList.add('rotate-180');
+                } else {
+                    guideDropdownMenu.classList.add('hidden');
+                    if (guideDropdownArrow) guideDropdownArrow.classList.remove('rotate-180');
+                }
+            });
+
+            // 드롭다운 내부 링크 클릭 시 메뉴 닫기
+            var guideLinks = document.querySelectorAll('.mobile-guide-link');
+            guideLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    guideDropdownMenu.classList.add('hidden');
+                    if (guideDropdownArrow) guideDropdownArrow.classList.remove('rotate-180');
+                });
+            });
+
+            // 화면 다른 곳 클릭 시 드롭다운 닫기
+            document.addEventListener('click', function(e) {
+                if (!guideDropdownMenu.contains(e.target) && e.target !== guideDropdownBtn) {
+                    guideDropdownMenu.classList.add('hidden');
+                    if (guideDropdownArrow) guideDropdownArrow.classList.remove('rotate-180');
+                }
+            });
+        }
     });
     </script>
 </body>
