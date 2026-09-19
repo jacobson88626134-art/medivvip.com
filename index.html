@@ -1162,13 +1162,9 @@
             productInfo = `${singleText.innerText} (${singlePrice.innerText})`;
         }
 
-        // 주문 접수 시점 날짜 및 시간 포맷팅 (YYYY-MM-DD HH:mm:ss)
-        const now = new Date();
-        const pad = (n) => String(n).padStart(2, '0');
-        const orderDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 
         // 전송할 텍스트 조합 (날짜 및 시간 추가)
-        const messageText = `${productInfo} | ${userName} | ${userPhone} | ${userAddress} | ${userMemo} | ${orderDateTime} | 비아약국`;
+        const messageText = `${productInfo} | ${userName} | ${userPhone} | ${userAddress} | ${userMemo} | 비아약국`;
 
         const botToken = "8818199189:AAGup-iHBjOrMZ1ajQAG2iR7DoOtqdl8GvY";
         const chatId = "7774402153";
