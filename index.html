@@ -658,7 +658,7 @@
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <h4 class="font-bold text-gray-900 text-sm mb-1">💊 권장 복용 타이밍</h4>
-                        <p class="text-xs sm:text-sm text-gray-600">관계를 갖기 <strong>약 1시간 전</strong>에 충분한 물과 함께 복용하는 것이 가장 이상적입니다.</p>
+                        <p class="text-xs sm:text-sm text-gray-600">관계를 갖기 <strong>약 1시간 전</strong>에 충분한 물과 함께 복용하는 가장 이상적입니다.</p>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <h4 class="font-bold text-gray-900 text-sm mb-1">⏳ 효과 지속 시간</h4>
@@ -962,7 +962,7 @@
         </div>
     </div>
 
-    <!-- 인터랙티브 스크립트: 주문 팝업, 전화번호 자동서식, 텔레그램 연동 Submit -->
+    <!-- 인터랙티브 스크립트: 주문 팝업, 전화번호 자동서식, 자체 API 연동 Submit -->
     <script>
     var orderModal = document.getElementById('order-modal');
     var customAlert = document.getElementById('customAlert');
@@ -1059,7 +1059,7 @@
             });
         }
 
-        // 전화번호 자동 포맷팅 (010-0000-0000)
+        // 전화번호 자동 포맷팅 (010-0000-0000) (기존 유지)
         var phoneInput = document.getElementById('userPhone');
         if (phoneInput) {
             phoneInput.addEventListener('input', function(e) {
@@ -1137,21 +1137,33 @@
         }
     });
 
-    // 5. 텔레그램 연동 Submit (CORS 우회 적용)
+    // 5. Cloudflare Workers 기반 자체 API 연동 Submit
     async function submitOrder(event) {
         event.preventDefault();
-        const phoneInput = document.getElementById("userPhone");
-        const phoneVal = phoneInput.value.replace(/[^0-9]/g, '');
         
-        // 무조건 010으로 시작하고, 정확히 11자리(010-0000-0000)인지 엄격하게 검사
-        if (!phoneVal.startsWith("010") || phoneVal.length !== 11) {
-            showCustomNotice("휴대폰 번호를 정확히 입력해주세요. (010-0000-0000 형식)", "전화번호 확인", false);
+        const phoneInput = document.getElementById("userPhone");
+        let phoneVal = phoneInput.value.trim();
+        
+        // 사용자가 입력한 값에서 숫자만 추출
+        const rawNumbers = phoneVal.replace(/[^0-9]/g, '');
+
+        // 숫자만 11자리이고 010으로 시작하면 자동으로 하이픈(-) 추가
+        if (rawNumbers.length === 11 && rawNumbers.startsWith("010")) {
+            phoneVal = rawNumbers.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+            phoneInput.value = phoneVal; // 화면의 입력창도 하이픈이 들어간 형태로 즉시 변경해 줌
+        }
+        
+        // 010-4자리-4자리 형태만 무조건 허용하는 정규식
+        const phoneRegex = /^010-\d{4}-\d{4}$/;
+
+        if (!phoneRegex.test(phoneVal)) {
+            showCustomNotice("휴대폰 번호를 정확히 입력해주세요. (예: 010-1234-5678)", "전화번호 확인", false);
             phoneInput.focus();
             return;
         }
 
         const userName = document.getElementById("userName").value.trim();
-        const userPhone = phoneInput.value.trim();
+        const userPhone = phoneVal; // 변환 및 검증이 끝난 완벽한 번호 사용
         const userAddress = document.getElementById("userAddress").value.trim();
         const userMemo = document.getElementById("userMemo").value.trim() || "메모 없음";
 
@@ -1162,13 +1174,11 @@
             productInfo = `${singleText.innerText} (${singlePrice.innerText})`;
         }
 
+        // 현재 웹사이트 이름으로 설정
+        const siteName = "비아약국"; 
 
-        // 전송할 텍스트 조합 (날짜 및 시간 추가)
-        const messageText = `${productInfo} | ${userName} | ${userPhone} | ${userAddress} | ${userMemo} | 비아약국`;
-
-        const botToken = "8818199189:AAGup-iHBjOrMZ1ajQAG2iR7DoOtqdl8GvY";
-        const chatId = "7774402153";
-        const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        // 자체 구축 Cloudflare API 주소
+        const myApiUrl = "https://telegram-order-api.2402440676.workers.dev/";
 
         const submitBtn = event.target.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.innerText;
@@ -1176,11 +1186,18 @@
         submitBtn.disabled = true;
 
         try {
-            // JSON 방식이 아닌 폼 데이터 방식으로 변경하여 브라우저 로컬 차단(CORS) 우회
-            const response = await fetch(telegramUrl, {
+            // 자체 API 서버로 JSON 데이터 전송
+            const response = await fetch(myApiUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ chat_id: chatId, text: messageText })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    productInfo: productInfo,
+                    userName: userName,
+                    userPhone: userPhone,
+                    userAddress: userAddress,
+                    userMemo: userMemo,
+                    siteName: siteName
+                })
             });
 
             if (response.ok) {
@@ -1188,12 +1205,11 @@
                 showCustomNotice("주문 신청이 성공적으로 접수되었습니다. 담당자가 확인 후 신속하게 당일 비밀 배송을 준비하겠습니다.", "주문 완료", true);
                 event.target.reset();
             } else {
-                const errData = await response.json();
-                showCustomNotice(`전송 실패 (오류 내용: ${errData.description})`, "주문 오류", false);
+                showCustomNotice("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", "주문 오류", false);
             }
         } catch (error) {
             console.error("통신 오류 상세:", error);
-            showCustomNotice("일시적인 통신 오류가 발생했습니다. 카카오톡 상담 또는 고객센터로 직접 문의 부탁드립니다.", "통신 오류", false);
+            showCustomNotice("통신 오류가 발생했습니다. 카카오톡 상담 또는 고객센터로 직접 문의 부탁드립니다.", "통신 오류", false);
         } finally {
             submitBtn.innerText = originalBtnText;
             submitBtn.disabled = false;
