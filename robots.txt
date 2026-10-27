@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://medivvip.com/sitemap.xml
+Sitemap: https://herayakguk.com/sitemap.xml
